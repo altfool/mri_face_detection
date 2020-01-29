@@ -59,7 +59,7 @@ for epoch in range(EPOCH_NUM):
         optimizer.step()
 
     if (epoch + 1) % 10 == 0:
-        print("Epoch: {}, Loss: {:.5f}".format(epoch + 1, loss.item()))
+        print("Epoch: {} / {}, Loss: {:.5f}".format(epoch + 1, EPOCH_NUM, loss.item()))
 
 # testing
 print("start testing...")

@@ -55,7 +55,7 @@ for epoch in range(EPOCH_NUM):
         y = torch.from_numpy(y).float().view(-1, 1)
         optimizer.zero_grad()
         outputs = model(X)
-        print(("outputs shape:{}, y shape: {}".format(outputs.shape, y.shape)))
+        # print(("outputs shape:{}, y shape: {}".format(outputs.shape, y.shape)))
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()

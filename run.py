@@ -5,7 +5,7 @@ from sklearn.utils import shuffle
 from model_with_dwt1 import *
 
 EPOCH_NUM = 100
-minibatch_size = 10
+minibatch_size = 50
 learning_rate = 1e-2
 
 # load images
@@ -47,6 +47,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 print("start training...")
 # num_of_batches = np.int(np.ceil(Xtrain.shape[0] / minibatch_size))
 for epoch in range(EPOCH_NUM):
+    Xtrain, ytrain = shuffle(Xtrain, ytrain)    # for each epoch, shuffle training data
     for idx in range(0, Xtrain.shape[0], minibatch_size):
         X = Xtrain[idx:idx+minibatch_size, ...]     # (N, 1, xdim, ydim, zdim)
         y = ytrain[idx:idx+minibatch_size]          # (N,)

@@ -47,7 +47,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 print("start training...")
 # num_of_batches = np.int(np.ceil(Xtrain.shape[0] / minibatch_size))
 for epoch in range(EPOCH_NUM):
-    Xtrain, ytrain = shuffle(Xtrain, ytrain)    # for each epoch, shuffle training data
+    # Xtrain, ytrain = shuffle(Xtrain, ytrain)    # for each epoch, shuffle training data
     for idx in range(0, Xtrain.shape[0], minibatch_size):
         X = Xtrain[idx:idx+minibatch_size, ...]     # (N, 1, xdim, ydim, zdim)
         y = ytrain[idx:idx+minibatch_size]          # (N,)
@@ -55,6 +55,7 @@ for epoch in range(EPOCH_NUM):
         y = torch.from_numpy(y).float().view(-1, 1)
         optimizer.zero_grad()
         outputs = model(X)
+        print(("outputs shape:{}, y shape: {}".format(outputs.shape, y.shape)))
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
@@ -65,6 +66,30 @@ for epoch in range(EPOCH_NUM):
 
 # testing
 print("start testing...")
+# training accuracy
+print("\nget training accuracy...")
+y_prob = []
+with torch.no_grad():
+    for idx in range(0, Xtrain.shape[0], minibatch_size):
+        X = Xtrain[idx:idx+minibatch_size, ...]
+        X = torch.from_numpy(X)
+        outputs = model(X)
+        # print("outputs.numpy shape: ", outputs.numpy().shape)
+        prob = list(outputs.detach().numpy())
+        y_prob += prob
+# print("y_prob len: ", len(y_prob))
+# print(y_prob)
+y_prob_np = np.array(y_prob).reshape((-1,))
+print(y_prob_np.shape)
+y_pred = (y_prob_np >= 0.5) * 1
+print("y_pred shape: ", y_pred.shape)
+print("ytrain:\n", ytrain)
+print("y_pred shape:{}, ytrain shape: {}".format(y_pred.shape, ytrain.shape))
+num_correct = np.sum(y_pred == ytrain)
+print("train accuracy: ", num_correct / len(ytrain))
+
+# test accuracy
+print("\nget test accuracy...")
 y_prob = []
 with torch.no_grad():
     for idx in range(0, Xtest.shape[0], minibatch_size):
@@ -77,12 +102,12 @@ with torch.no_grad():
 # print("y_prob len: ", len(y_prob))
 # print(y_prob)
 y_prob_np = np.array(y_prob).reshape((-1,))
-print(y_prob_np)
+print(y_prob_np.shape)
 y_pred = (y_prob_np >= 0.5) * 1
 print("y_pred shape: ", y_pred.shape)
-print(ytest)
+print("ytest:\n", ytest)
 print("y_pred shape:{}, ytest shape: {}".format(y_pred.shape, ytest.shape))
 num_correct = np.sum(y_pred == ytest)
-print("Accuracy: ", num_correct / len(ytest))
+print("test ccuracy: ", num_correct / len(ytest))
 
 

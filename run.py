@@ -57,9 +57,10 @@ for epoch in range(EPOCH_NUM):
         loss = criterion(outputs, y)
         loss.backward()
         optimizer.step()
+        print("\t\tidx: {}, loss: {:.5f}".format(idx, loss.item()))
 
     if (epoch + 1) % 10 == 0:
-        print("Epoch: {} / {}, Loss: {:.5f}".format(epoch + 1, EPOCH_NUM, loss.item()))
+        print("=======Epoch: {} / {}, Loss: {:.5f}=======".format(epoch + 1, EPOCH_NUM, loss.item()))
 
 # testing
 print("start testing...")

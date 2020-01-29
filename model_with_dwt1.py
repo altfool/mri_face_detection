@@ -27,7 +27,7 @@ class Net(nn.Module):
         x = F.relu(self.fc1(x))                     # x shape (600,)
         x = F.relu(self.fc2(x))                     # x shape (100,)
         x = F.relu(self.fc3(x))                     # x shape (10,)
-        x = F.sigmoid(self.fc4(x))                     # x shape (1,)
+        x = torch.sigmoid(self.fc4(x))                     # x shape (1,)
         return x
 
 # net = Net()

@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from model_with_dwt1 import *
 
-EPOCH_NUM = 1
+EPOCH_NUM = 100
 minibatch_size = 10
 learning_rate = 1e-2
 
@@ -22,16 +22,20 @@ print("Xtrain cs:{}, ytrain cs:{}, Xtest cs:{}, ytest cs:{}".format(Xtrain_cs.sh
                                                                   Xtest_cs.shape, ytest_cs.shape))
 print("Xtrain ct:{}, ytrain ct:{}, Xtest ct:{}, ytest ct:{}".format(Xtrain_ct.shape, ytrain_ct.shape,
                                                                   Xtest_ct.shape, ytest_ct.shape))
+del csImgs, ctImgs
+
 # integrate cs and ct images
 Xtrain = np.vstack((Xtrain_cs, Xtrain_ct))
 ytrain = np.hstack((ytrain_cs, ytrain_ct))
 Xtrain, ytrain = shuffle(Xtrain, ytrain)
 Xtrain = np.expand_dims(Xtrain, axis=1)
+del Xtrain_cs, Xtrain_ct
 
 Xtest = np.vstack((Xtest_cs, Xtest_ct))
 ytest = np.hstack((ytest_cs, ytest_ct))
 Xtest, ytest = shuffle(Xtest, ytest)
 Xtest = np.expand_dims(Xtest, axis=1)
+del Xtest_cs, Xtest_ct
 print("Xtrain shape:{}, ytrain shape:{}\nXtest shape:{}, ytest shape:{}".format(Xtrain.shape, ytrain.shape,
                                                                                 Xtest.shape, ytest.shape))
 # prepare model
@@ -40,6 +44,7 @@ criterion = torch.nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # training
+print("start training...")
 # num_of_batches = np.int(np.ceil(Xtrain.shape[0] / minibatch_size))
 for epoch in range(EPOCH_NUM):
     for idx in range(0, Xtrain.shape[0], minibatch_size):
@@ -57,6 +62,7 @@ for epoch in range(EPOCH_NUM):
         print("Epoch: {}, Loss: {:.5f}".format(epoch + 1, loss.item()))
 
 # testing
+print("start testing...")
 y_prob = []
 with torch.no_grad():
     for idx in range(0, Xtest.shape[0], minibatch_size):
